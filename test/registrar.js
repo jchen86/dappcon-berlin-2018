@@ -32,11 +32,10 @@ contract("Registrar", (accounts) => {
     }
   });
 
-  it.skip("lists registry keys", async () => {
+  it("lists registry keys", async () => {
     let registry = "list-test";
 
     await registrar.set(registry, "current-location", "dappcon");
-    await registrar.set(registry, "current-location", "still-dappcon");
     await registrar.set(registry, "is-berlin-cool", "jawohl!");
 
     let num = await registrar.size(registry);
@@ -46,5 +45,18 @@ contract("Registrar", (accounts) => {
     }
 
     assert.deepEqual(keys, ["current-location", "is-berlin-cool"]);
+  });
+
+  it("first account to set a record for a particular registry becomes the owner", async () => {
+    let registry = "set-owner2";
+
+    let owner = await registrar.getOwner(registry);
+    assert.equal(owner, '0x0000000000000000000000000000000000000000');
+    
+    const { tx } = await registrar.set(registry, "first-record", "dappcon");
+    console.log('set tx', tx)
+
+    owner = await registrar.getOwner(registry);
+    assert.equal(owner, accounts[0]);
   });
 });

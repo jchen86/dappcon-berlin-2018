@@ -13,6 +13,8 @@ library RegistryLib {
 
     // to allow enumeration
     bytes32[] hashes;
+
+    address owner;
   }
 
   struct Record {
@@ -48,6 +50,10 @@ library RegistryLib {
     if (!record.exists) {
       // new record
       record.createdAt = block.number;
+    }
+
+    if (self.owner == address(0)) {
+      self.owner = msg.sender;
     }
 
     record.exists = true;

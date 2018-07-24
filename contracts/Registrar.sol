@@ -7,8 +7,7 @@ contract Registrar {
   using RegistryLib for RegistryLib.Registry;
 
   // maps hash of name to registry
-  mapping (bytes32 => RegistryLib.Registry)
-    registries;
+  mapping (bytes32 => RegistryLib.Registry) registries;
 
 
   /*
@@ -23,9 +22,20 @@ contract Registrar {
     public
   {
     bytes32 hash = RegistryLib.getHash(name);
-    RegistryLib.Registry storage registry =
-      registries[hash];
+    RegistryLib.Registry storage registry = registries[hash];
     registry.set(key, value);
+  }
+
+  function getOwner(string name)
+    public
+    view 
+    returns (
+      address owner
+    )
+  {
+    bytes32 hash = RegistryLib.getHash(name);
+    RegistryLib.Registry storage registry = registries[hash];
+    return registry.owner;
   }
 
   function get(string name, string key)
@@ -38,10 +48,8 @@ contract Registrar {
     )
   {
     bytes32 hash = RegistryLib.getHash(name);
-    RegistryLib.Registry storage registry =
-      registries[hash];
-    RegistryLib.Record storage record =
-      registry.get(key);
+    RegistryLib.Registry storage registry = registries[hash];
+    RegistryLib.Record storage record = registry.get(key);
 
     value = record.value;
     createdAt = record.createdAt;
@@ -54,8 +62,7 @@ contract Registrar {
     returns (uint256 num)
   {
     bytes32 hash = RegistryLib.getHash(name);
-    RegistryLib.Registry storage registry =
-      registries[hash];
+    RegistryLib.Registry storage registry = registries[hash];
 
     num = registry.size();
   }
@@ -66,11 +73,9 @@ contract Registrar {
     returns (string key)
   {
     bytes32 hash = RegistryLib.getHash(name);
-    RegistryLib.Registry storage registry =
-      registries[hash];
+    RegistryLib.Registry storage registry = registries[hash];
 
-    RegistryLib.Record[] memory records =
-      registry.list();
+    RegistryLib.Record[] memory records = registry.list();
 
     key = records[i].key;
   }
